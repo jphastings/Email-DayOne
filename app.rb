@@ -67,28 +67,31 @@ get '/settings' do
 end
 
 post '/receive_emails' do
-  p params['from'].gsub(/^.*<?(.+)>?$/,'\\1')
   to_user = User.find_by_incoming_key(params['to'].gsub(/@.*$/,''))
-  from_user = Email.find_by_email(params['from'].gsub(/^.*<?(.+)>?$/,'\\1')).user
-  unless to_user == from_user
+  
+  begin
+    from_user = Email.find_by_email(params['from'].gsub(/^.*\<(.+)\>$/,'\\1')).user
+    raise NoMethodError unless to_user == from_user
+  
+    # TODO: Log in
+  
+    # TODO: can find journal?
+  
+    require File.join(File.dirname(__FILE__), 'lib','dayone')
+  
+    entry = DayOne.new(
+      #:creation_date => params['headers']?
+      :creation_date => Time.now,
+      :entry_text => params['text'] || params['html'],
+      #:starred => params['headers'] high priority?
+      :starred => false
+    )
+  
+    puts entry.to_plist
+    halt(200)
+  rescue NoMethodError
     # TODO: dodgey incoming, write to logs?
+    $stderr.puts "The email failed because of a NoMethodError. That's a coding error dude!"
     halt(200)
   end
-  
-  # TODO: Log in
-  
-  # TODO: can find journal?
-  
-  require File.join(File.dirname(__FILE__), 'lib','dayone')
-  
-  entry = DayOne.new(
-    #:creation_date => params['headers']?
-    :creation_date => Time.now,
-    :entry_text => params['text'] || params['html'],
-    #:starred => params['headers'] high priority?
-    :starred => false
-  )
-  
-  puts entry.to_plist
-  halt(200)
 end
