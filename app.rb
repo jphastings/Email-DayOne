@@ -82,8 +82,7 @@ post '/receive_emails' do
     entry = DayOne.new(
       :creation_date => (Time.parse(params['headers'].match(/^Date: (.*)$/)[1]) rescue Time.now),
       :entry_text => params['text'] || params['html'],
-      #:starred => params['headers'] high priority?
-      :starred => false
+      :starred => (not params['headers'].match(/^X-Priority: 1$/).nil?)
     )
   
     puts entry.to_plist
