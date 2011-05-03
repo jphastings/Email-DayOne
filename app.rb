@@ -79,13 +79,13 @@ post '/receive_emails' do
   
     require File.join(File.dirname(__FILE__), 'lib','dayone')
     
-    p (Time.parse(params['headers'].match(/^Date: (.*)$/)[1]) rescue Time.now)
-    
     entry = DayOne.new(
       :creation_date => (Time.parse(params['headers'].match(/^Date: (.*)$/)[1]) rescue Time.now),
       :entry_text => params['text'] || params['html'],
       :starred => (not params['headers'].match(/^X-Priority: 1$/).nil?)
     )
+    
+    p entry.creation_date
   
     puts entry.to_plist
     halt(200)
