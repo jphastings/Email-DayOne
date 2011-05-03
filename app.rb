@@ -57,7 +57,7 @@ get '/settings' do
     @user = Email.find_by_email(@dropbox.account.email).user
   rescue NoMethodError
     @user = User.create(
-      :dropbox_session => @dropbox.serialize,
+      :dropbox_session => @dropbox.serialize
     )
     @user.emails << Email.create(:email => @dropbox.account.email)
     
