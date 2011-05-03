@@ -6,3 +6,4 @@ sinatra-session
 haml
 maruku
 rspec
+plist

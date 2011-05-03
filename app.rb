@@ -78,7 +78,11 @@ post '/receive_emails' do
     # TODO: can find journal?
   
     require File.join(File.dirname(__FILE__), 'lib','dayone')
-  
+    
+    p params['headers'].match(/^Date: (.*)$/m)
+    
+    p params['header']
+    
     entry = DayOne.new(
       #:creation_date => params['headers']?
       :creation_date => Time.now,
