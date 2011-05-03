@@ -5,3 +5,4 @@ dropbox
 sinatra-session
 haml
 maruku
+rspec
