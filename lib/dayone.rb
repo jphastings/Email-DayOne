@@ -17,10 +17,8 @@ class DayOne
   # Options can include any writable attributes. They will be set as the class is instantiated.
   def initialize(options = {})
     options.each_pair do |k,v|
-      if KEYS.keys.include? k
-        internal = k.downcase.gsub(/\W/,'_').gsub(/_+/,'_')
-        self.send((internal<<'=').to_sym,v)
-      end
+      # TODO: don't allow setting of others?
+      instance_variable_set("@#{k.to_s}",v)
     end
     @uuid = UUID.new.generate.gsub('-','').upcase
   end
