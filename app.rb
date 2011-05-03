@@ -67,9 +67,9 @@ get '/settings' do
 end
 
 post '/receive_emails' do
-  p params
-  to_user = User.find_by_incoming_key(params['key'].gsub(/@.*$/,''))
-  from_user = Email.find_by_email(params['from']).user
+  p params['from'].gsub(/^.*<?(.+)>?$/,'\\1')
+  to_user = User.find_by_incoming_key(params['to'].gsub(/@.*$/,''))
+  from_user = Email.find_by_email(params['from'].gsub(/^.*<?(.+)>?$/,'\\1')).user
   unless to_user == from_user
     # TODO: dodgey incoming, write to logs?
     halt(200)
