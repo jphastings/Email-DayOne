@@ -42,11 +42,3 @@ class DayOne
     plist.to_plist
   end
 end
-
-d = DayOne.new
-
-d.creation_date = Time.now
-d.entry_text = "Hi there!"
-d.starred = false
-
-p d.to_plist
