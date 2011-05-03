@@ -79,8 +79,6 @@ post '/receive_emails' do
   
     require File.join(File.dirname(__FILE__), 'lib','dayone')
     
-    p params['headers']
-    
     entry = DayOne.new(
       :creation_date => (Time.parse(params['headers'].match(/^Date: (.*)$/)[1]) rescue Time.now),
       :entry_text => params['text'] || params['html'],
