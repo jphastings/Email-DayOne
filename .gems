@@ -3,3 +3,4 @@ activerecord
 uuid
 dropbox
 sinatra-session
+haml
