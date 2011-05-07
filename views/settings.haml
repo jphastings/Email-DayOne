@@ -10,14 +10,21 @@
 	Email your DayOne Journal entries to:
 	%a{:href=>"mailto:#{@user.incoming_key}@dayone.byjp.me"}="#{@user.incoming_key}@dayone.byjp.me"
 	
-:markdown
-	Send an email to this address (*keep it secret!*), from one of your registered email addresses and the body of the email will be turned into a DayOne journal in your DropBox.
-	
-	The subject line is interpreted here as space seperated tags, which are stored in your journal entry (even if DayOne doesn't support them yet)
-
+%ol
+	%li
+		Send an email to this address (<em>keep it secret!</em>), from one of your registered addresses and the body of the email will be turned into a DayOne journal in your DropBox.
+	%li
+		Flag your email as High Priority and it'll come into your journal starred.
+	%li
+		The subject line will become tags for your entry (space seperated)
 
 %h2 Registered Email addresses for this account
-%ul
+%ul#emails
 	-@user.emails.each do |e|
-		%li=e.email
-	%li.hush We're working on letting you register other addresses
+		%li
+			%a{:href=>"/settings?email=#{URI.escape(e.email)}&action=remove",:title=>'Disallow journal entries from this address'}=e.email
+	%li#add_email
+		%form
+			%input{:type=>'text',:name=>'email',:style=>'width:200px'}
+			%input{:type=>'hidden',:name=>'action',:value=>'add'}
+			%input{:type=>'submit',:value=>'add new email'}

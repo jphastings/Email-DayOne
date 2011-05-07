@@ -59,3 +59,33 @@ hr {
 	height:5px;
 	margin:40px;
 }
+
+#add_email {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+	filter: alpha(opacity=20);
+	-moz-opacity: 0.2;
+	-khtml-opacity: 0.2;
+	opacity: 0.2;
+}
+
+#add_email:hover {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	-moz-opacity: 1.0;
+	-khtml-opacity: 1.0;
+	opacity: 1.0;
+}
+
+#emails li {
+	margin: 5px;
+}
+
+#emails a {
+	color: #000;
+	padding-right:16px;
+}
+
+#emails a:hover {
+	color: #c60d12;
+	background:url('/img/remove.png') right center no-repeat;
+}

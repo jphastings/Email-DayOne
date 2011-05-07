@@ -64,7 +64,7 @@ get '/settings' do
   redirect('/') unless @dropbox.authorized?
   
   begin
-    @user = Email.find_by_email(@dropbox.account.email).user
+    @user = User.find_by_dropbox_id(@dropbox.account.uid)
   rescue NoMethodError
     
     begin
@@ -80,6 +80,14 @@ get '/settings' do
     
     @user.save
   end
+  
+  case params['action']
+  when 'add'
+    Email.find_or_create_by_email_and_user_id(params['email'],@user.id)
+  when 'remove'
+    Email.find(:first,:conditions => ['email = ? and user_id = ?',params['email'],@user.id]).each {|e| e.destroy}
+  end
+  
   haml :settings
 end
 
