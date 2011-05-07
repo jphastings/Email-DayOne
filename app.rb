@@ -68,16 +68,25 @@ end
 
 post '/receive_emails' do
   to_user = User.find_by_incoming_key(params['to'].gsub(/@.*$/,''))
+  $stdout.puts "Email received to user id ##{to_user.id}"
   
   begin
-    from_user = Email.find_by_email(params['from'].gsub(/^.*\<(.+)\>$/,'\\1')).user
+    from_email = Email.find_by_email(params['from'].gsub(/^.*\<(.+)\>$/,'\\1'))
+    from_user = from_email.user
+    # raise AuthenticationError if from_user.nil?
     raise NoMethodError unless to_user == from_user
-  
+    user = to_user
+    
     # TODO: Log in
-  
-    # TODO: can find journal?
+    @dropbox = Dropbox::Session.deserialize(to_user.dropbox_session)
+    
+    entries = @dropbox.directory(File.join(user.journal_location,'entries')
+    
+    # This will throw an error if the folder doesn't exist
+    entries.metadata
   
     require File.join(File.dirname(__FILE__), 'lib','dayone')
+    DayOne::SOURCE = 'Email to DayOne (http://dayone.byJP.me)'
     
     entry = DayOne.new(
       :creation_date => (Time.parse(params['headers'].match(/^Date: (.*)$/)[1]) rescue Time.now),
@@ -85,13 +94,13 @@ post '/receive_emails' do
       :starred => (not params['headers'].match(/^X-Priority: 1$/).nil?)
     )
     
-    p entry.creation_date
-  
-    puts entry.to_plist
+    @dropbox.upload(entry.to_plist,:as => entry.uuid+'.doentry')
+    
+    $stdout.puts "Entry from #{from_email.email} successfully added to their Dropbox"
     halt(200)
   rescue NoMethodError
     # TODO: dodgey incoming, write to logs?
-    $stderr.puts "The email failed because of a NoMethodError. That's a coding error dude!"
+    $stderr.puts "TODO: NoMethodError"
     halt(200)
   end
 end

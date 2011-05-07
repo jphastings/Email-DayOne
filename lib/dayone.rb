@@ -8,6 +8,8 @@ class DayOne
     'Starred' => [TrueClass,FalseClass]
   }
   
+  SOURCE = "DayOne ruby gem"
+    
   KEYS.each do |k|
     # TODO: ensure types are correct
     attr_accessor k[0].downcase.gsub(/\W/,'_').gsub(/_+/,'_')
@@ -15,7 +17,7 @@ class DayOne
   attr_reader :uuid
   
   # Options can include any writable attributes. They will be set as the class is instantiated.
-  def initialize(options = {})
+  def initialize(options = {})    
     options.each_pair do |k,v|
       # TODO: don't allow setting of others?
       instance_variable_set("@#{k.to_s}",v)
@@ -37,6 +39,7 @@ class DayOne
       plist[k] = val
     end
     plist['UUID'] = @uuid
+    plist['Source'] = SOURCE
     plist.to_plist
   end
 end
