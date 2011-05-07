@@ -38,7 +38,7 @@ class DayOne
       plist[k] = val
     end
     plist['UUID'] = @uuid
-    plist['Source'] = "Email DayOne (http://dayone.byJP.me)"
+    plist['Source'] = "Day One by Mail (http://dayone.byJP.me)"
     plist.to_plist
   end
 end
