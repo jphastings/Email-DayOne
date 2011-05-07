@@ -3,8 +3,17 @@
 		%a{:href=>'/login'} Log In / Sign Up with Dropbox
 		
 .center
-	%p
-		A crazily simple service allowing you to email yourself DayOne journal entries.
+	%p A crazily simple service allowing you to email yourself DayOne journal entries.
 
 %a.center{:href=>'/login'}
 	%img{:src=>'/img/signin_with_dropbox.png'}
+
+%hr
+
+.center{:style=>'color:#bbb;'}
+	:markdown
+		This service was made [by JP](http://byJP.me) and is hosted on [heroku](http://heroku.com). You can find the source code [on github](https://github.com/jphastings/Email-DayOne).
+	
+		Your emails are communicated to heroku via SSL and are not kept.
+		
+		We **never** email you. Period.

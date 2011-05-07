@@ -54,3 +54,8 @@ a:hover {
 	color:#aaa;
 	font-style:italic;
 }
+
+hr {
+	height:5px;
+	margin:40px;
+}
