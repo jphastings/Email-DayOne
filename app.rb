@@ -66,10 +66,16 @@ get '/settings' do
   begin
     @user = Email.find_by_email(@dropbox.account.email).user
   rescue NoMethodError
-    @user = User.create(
-      :dropbox_session => @dropbox.serialize,
-      :dropbox_id => @dropbox.account.uid
-    )
+    
+    begin
+      @user = User.create(
+        :dropbox_session => @dropbox.serialize,
+        :dropbox_id => @dropbox.account.uid,
+        :journal_location => scan_for_journal('/',5)
+      )
+    rescue NoJournalError
+      halt(400,haml(:nojournal))
+    end
     @user.emails << Email.create(:email => @dropbox.account.email)
     
     @user.save
