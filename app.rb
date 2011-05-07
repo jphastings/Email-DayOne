@@ -77,6 +77,7 @@ post '/receive_emails' do
     
     # TODO: Log in
     @dropbox = Dropbox::Session.deserialize(to_user.dropbox_session)
+    @dropbox.mode = :dropbox
     
     entries = @dropbox.directory(File.join(user.journal_location,'entries'))
     
