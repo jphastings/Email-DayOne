@@ -73,7 +73,7 @@ get '/settings' do
         :dropbox_id => @dropbox.account.uid,
         :journal_location => scan_for_journal('/',5)
       )
-    rescue NoJournalError
+    rescue NoJournalFoundError
       halt(400,haml(:nojournal))
     end
     @user.emails << Email.create(:email => @dropbox.account.email)
