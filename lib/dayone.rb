@@ -5,11 +5,9 @@ class DayOne
   KEYS = {
     'Creation Date' => Time,
     'Entry Text' => String,
-    'Starred' => [TrueClass,FalseClass]
+    'Starred' => [TrueClass,FalseClass],
+    'Tags' => Array
   }
-  
-  def source=(source); @source = source; end
-  def source; @source; end
     
   KEYS.each do |k|
     # TODO: ensure types are correct
@@ -40,7 +38,7 @@ class DayOne
       plist[k] = val
     end
     plist['UUID'] = @uuid
-    plist['Source'] = @source
+    plist['Source'] = "Email DayOne (http://dayone.byJP.me)"
     plist.to_plist
   end
 end

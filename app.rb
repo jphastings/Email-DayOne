@@ -1,5 +1,6 @@
 require 'sinatra'
 require File.join(File.dirname(__FILE__), 'environment')
+require File.join(File.dirname(__FILE__), 'lib','helpers')
 require 'dropbox'
 require 'sinatra/session'
 
@@ -65,14 +66,16 @@ get '/settings' do
 end
 
 post '/receive_emails' do
-  to_user = User.find_by_incoming_key(params['to'].gsub(/@.*$/,''))
-  $stdout.puts "Email received to user id ##{to_user.id}"
-  
   begin
+    to_user = User.find_by_incoming_key(params['to'].gsub(/@.*$/,''))
+    raise NoSuchUserError if to_user.nil?
+    $stdout.puts "Email received to user id ##{to_user.id}"
+    
     from_email = Email.find_by_email(params['from'].gsub(/^.*\<(.+)\>$/,'\\1'))
+    raise NoSuchEmailError if from_email.nil?
     from_user = from_email.user
     # raise AuthenticationError if from_user.nil?
-    raise NoMethodError unless to_user == from_user
+    raise MismatchUserError unless to_user == from_user
     user = to_user
     
     # TODO: Log in
@@ -85,22 +88,22 @@ post '/receive_emails' do
     entries.metadata
   
     require File.join(File.dirname(__FILE__), 'lib','dayone')
-    DayOne.source = 'Email to DayOne (http://dayone.byJP.me)'
     require 'stringio'
     
     entry = DayOne.new(
       :creation_date => (Time.parse(params['headers'].match(/^Date: (.*)$/)[1]) rescue Time.now),
       :entry_text => params['text'] || params['html'],
-      :starred => (not params['headers'].match(/^X-Priority: 1$/).nil?)
+      :starred => (not params['headers'].match(/^X-Priority: 1$/).nil?),
+      :tags => params['subject'].split(/\ +/)
     )
     
-    @dropbox.upload StringIO.new(entry.to_plist) ,:as => File.join(user.journal_location,'entries',entry.uuid+'.doentry')
+    @dropbox.upload(StringIO.new(entry.to_plist),File.join(user.journal_location,'entries'), :as => File.join(user.journal_location,'entries',entry.uuid+'.doentry'))
     
     $stdout.puts "Entry from #{from_email.email} successfully added to their Dropbox"
     halt(200)
-  rescue NoMethodError
-    # TODO: dodgey incoming, write to logs?
-    $stderr.puts "TODO: NoMethodError"
-    halt(200)
+  rescue NoSuchUserError,NoSuchEmailError,MismatchUserError
+    halt(403,"You are not authorized to use this service")
+  rescue Dropbox::FileNotFoundError
+    halt(400,"We couldn't find your journal file! Are you sure it's in your dropbox as /Journal.dayone?")
   end
 end
