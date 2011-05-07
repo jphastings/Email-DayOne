@@ -5,5 +5,8 @@
 %ul
 -@user.emails.each do |e|
 	%li=e.email
-%a{:src=>'/logout'} Logout
-%a{:src=>'/delete'} Delete Account (Coming soon)
+%ul
+	%li
+		%a{:href=>'/logout'} Logout
+	%li
+		%a{:href=>'/delete'} Delete Account (Coming soon)
