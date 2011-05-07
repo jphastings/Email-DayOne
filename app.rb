@@ -94,7 +94,7 @@ post '/receive_emails' do
       :starred => (not params['headers'].match(/^X-Priority: 1$/).nil?)
     )
     
-    @dropbox.upload(entry.to_plist,:as => entry.uuid+'.doentry')
+    @dropbox.upload(entry.to_plist,:as => File.join(user.journal_location,'entries',entry.uuid+'.doentry'))
     
     $stdout.puts "Entry from #{from_email.email} successfully added to their Dropbox"
     halt(200)
