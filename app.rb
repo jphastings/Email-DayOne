@@ -80,7 +80,7 @@ post '/receive_emails' do
     # TODO: Log in
     @dropbox = Dropbox::Session.deserialize(to_user.dropbox_session)
     
-    entries = @dropbox.directory(File.join(user.journal_location,'entries')
+    entries = @dropbox.directory(File.join(user.journal_location,'entries'))
     
     # This will throw an error if the folder doesn't exist
     entries.metadata
