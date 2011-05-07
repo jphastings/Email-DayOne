@@ -63,10 +63,8 @@ get '/settings' do
   prep_dropbox
   redirect('/') unless @dropbox.authorized?
   
-  begin
-    @user = User.find_by_dropbox_id(@dropbox.account.uid)
-  rescue NoMethodError
-    
+  @user = User.find_by_dropbox_id(@dropbox.account.uid)
+  if @user.nil?
     begin
       @user = User.create(
         :dropbox_session => @dropbox.serialize,
