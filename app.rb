@@ -3,8 +3,6 @@ require File.join(File.dirname(__FILE__), 'environment')
 require 'dropbox'
 require 'sinatra/session'
 
-set :port, 4568
-
 helpers do
   def prep_dropbox
     if session[:dropbox_session]
