@@ -85,7 +85,7 @@ post '/receive_emails' do
     entries.metadata
   
     require File.join(File.dirname(__FILE__), 'lib','dayone')
-    DayOne::SOURCE = 'Email to DayOne (http://dayone.byJP.me)'
+    DayOne.source = 'Email to DayOne (http://dayone.byJP.me)'
     require 'stringio'
     
     entry = DayOne.new(
@@ -94,7 +94,7 @@ post '/receive_emails' do
       :starred => (not params['headers'].match(/^X-Priority: 1$/).nil?)
     )
     
-    @dropbox.upload(StringIO.new(entry.to_plist),:as => File.join(user.journal_location,'entries',entry.uuid+'.doentry'))
+    @dropbox.upload StringIO.new(entry.to_plist) ,:as => File.join(user.journal_location,'entries',entry.uuid+'.doentry')
     
     $stdout.puts "Entry from #{from_email.email} successfully added to their Dropbox"
     halt(200)

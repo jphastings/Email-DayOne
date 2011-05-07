@@ -8,7 +8,8 @@ class DayOne
     'Starred' => [TrueClass,FalseClass]
   }
   
-  SOURCE = "DayOne ruby gem"
+  def source=(source); @source = source; end
+  def source; @source; end
     
   KEYS.each do |k|
     # TODO: ensure types are correct
@@ -39,7 +40,7 @@ class DayOne
       plist[k] = val
     end
     plist['UUID'] = @uuid
-    plist['Source'] = SOURCE
+    plist['Source'] = @source
     plist.to_plist
   end
 end
