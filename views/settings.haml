@@ -1,12 +1,23 @@
-%h1 How to Use
-%a#send_to{:href=>"mailto:#{@user.incoming_key}@dayone.byjp.me"}="#{@user.incoming_key}@dayone.byjp.me"
-
-%h2 Registered Email addresses for this account
-%ul
--@user.emails.each do |e|
-	%li=e.email
-%ul
+%ul#nav
 	%li
 		%a{:href=>'/logout'} Logout
 	%li
-		%a{:href=>'/delete'} Delete Account (Coming soon)
+		%a{:href=>'/delete'} Delete Account
+
+%h1 Ready for Action
+
+.center#send_to
+	Email your DayOne Journal entries to:
+	%a{:href=>"mailto:#{@user.incoming_key}@dayone.byjp.me"}="#{@user.incoming_key}@dayone.byjp.me"
+	
+:markdown
+	Send an email to this address (*keep it secret!*), from one of your registered email addresses and the body of the email will be turned into a DayOne journal in your DropBox.
+	
+	The subject line is interpreted here as space seperated tags, which are stored in your journal entry (even if DayOne doesn't support them yet)
+
+
+%h2 Registered Email addresses for this account
+%ul
+	-@user.emails.each do |e|
+		%li=e.email
+	%li.hush We're working on letting you register other addresses

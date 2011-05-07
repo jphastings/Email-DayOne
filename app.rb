@@ -14,7 +14,6 @@ helpers do
     end
     
     @dropbox.mode = :dropbox
-    redirect('/settings') if @dropbox.authorized? and env['REQUEST_URI'] != '/settings'
   end
 end
 
@@ -32,6 +31,17 @@ end
 get '/logout' do
   session_end!
   redirect '/'
+end
+
+get '/delete' do
+  prep_dropbox
+  redirect('/') unless @dropbox.authorized?
+  
+  User.find_by_dropbox_id(@dropbox.account.uid).destroy
+  
+  session_end!
+  
+  haml :deleted
 end
 
 get '/auth' do
@@ -52,11 +62,13 @@ end
 get '/settings' do
   prep_dropbox
   redirect('/') unless @dropbox.authorized?
+  
   begin
     @user = Email.find_by_email(@dropbox.account.email).user
   rescue NoMethodError
     @user = User.create(
-      :dropbox_session => @dropbox.serialize
+      :dropbox_session => @dropbox.serialize,
+      :dropbox_id => @dropbox.account.uid
     )
     @user.emails << Email.create(:email => @dropbox.account.email)
     
@@ -69,14 +81,13 @@ post '/receive_emails' do
   begin
     to_user = User.find_by_incoming_key(params['to'].gsub(/@.*$/,''))
     raise NoSuchUserError if to_user.nil?
-    $stdout.puts "Email received to user id ##{to_user.id}"
     
     from_email = Email.find_by_email(params['from'].gsub(/^.*\<(.+)\>$/,'\\1'))
     raise NoSuchEmailError if from_email.nil?
     from_user = from_email.user
-    # raise AuthenticationError if from_user.nil?
     raise MismatchUserError unless to_user == from_user
     user = to_user
+    $stdout.puts "Email received from user ##{to_user.id}"
     
     # TODO: Log in
     @dropbox = Dropbox::Session.deserialize(to_user.dropbox_session)

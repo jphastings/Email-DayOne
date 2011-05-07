@@ -4,6 +4,7 @@ class CreateUsers < ActiveRecord::Migration
       table.text      :dropbox_session, :default => nil
       table.string    :incoming_key
       table.text      :journal_location, :default => '/Journal.dayone'
+      table.integer   :dropbox_id
       
       table.timestamp :created_on
     end

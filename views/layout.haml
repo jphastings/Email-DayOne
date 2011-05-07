@@ -2,5 +2,9 @@
 %html
 	%head
 		%title Email DayOne
+		%link{:href=>"/css/default.css",:media=>"screen",:rel=>"stylesheet",:type=>"text/css"}
 	%body
-		=yield
+		#content
+			%h1 	
+				%img{:src=>'/img/header.png',:alt=>'Day One by Mail'}
+			=yield
